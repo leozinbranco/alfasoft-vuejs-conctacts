@@ -5,7 +5,7 @@
       <p>{{ text }}</p>
       <div class="modal-actions">
         <button @click="onConfirm">Confirmar</button>
-        <button @click="onCancel">Cancelar</button>
+        <button v-if="question" @click="onCancel">Cancelar</button>
       </div>
     </div>
   </div>
@@ -22,6 +22,10 @@ export default {
       type: String,
       default: 'Tem certeza que deseja continuar?',
     },
+    question: {
+      type: Boolean,
+      default: true,
+    },
     onConfirm: {
       type: Function,
       default: () => {},
@@ -35,7 +39,6 @@ export default {
 </script>
 
 <style>
-/* Estilos do modal */
 .modal {
   position: fixed;
   top: 0;

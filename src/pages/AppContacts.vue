@@ -4,8 +4,9 @@
       :contactsData="contacts"
       @editContact="handleEditContact"
       @deleteContact="handleShowModalConfirmation"
-      @seeDetails="handleEditContact"
+      @seeDetails="handleSeeDetailsContact"
     />
+
     <Modal
       :show="showModal"
       text="Tem certeza que deseja excluir?"
@@ -33,35 +34,39 @@ export default {
     };
   },
   methods: {
-    handleDeleteContact(event) {
+    handleDeleteContact() {
       let storedContacts = JSON.parse(localStorage.getItem("contacts"));
       let newContacts = storedContacts.filter(
         (contact) => contact.email !== this.emailToExclude
       );
       localStorage.setItem("contacts", JSON.stringify(newContacts));
-      console.log("HANDLE DELETAR CONTATO", event);
       this.showModal = false;
       this.loadLocalStorageData();
     },
     handleEditContact(event) {
+      this.$router.push({
+        path: "/newContact",
+        query: {
+          email: event,
+        },
+      });
+    },
+    handleSeeDetailsContact(event) {
       this.$router.push({
         path: "/details",
         query: {
           email: event,
         },
       });
-      console.log("HANDLE EDITAR CONTATO", event);
     },
     loadLocalStorageData() {
       this.contacts = JSON.parse(localStorage.getItem("contacts"));
-      console.log(this.contacts);
     },
     handleShowModalConfirmation(email) {
       this.showModal = true;
       this.emailToExclude = email;
     },
     handleCancel() {
-      console.log("Ação de cancelamento executada!");
       this.emailToExclude = "";
       this.showModal = false;
     },

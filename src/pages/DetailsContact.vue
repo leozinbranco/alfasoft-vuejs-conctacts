@@ -11,12 +11,6 @@
 
 <script>
 export default {
-  //   props: {
-  //     contact: {
-  //       type: Object,
-  //       required: true,
-  //     },
-  //   },
   data() {
     return {
       contact: {

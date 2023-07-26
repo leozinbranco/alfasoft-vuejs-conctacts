@@ -11,7 +11,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="contact in contactsData" :key="contact.id">
+          <tr v-for="contact in contactsData" :key="contact.email">
             <td><img :src="contact.photo" width="50" /></td>
             <td>{{ contact.name }}</td>
             <td>
@@ -37,15 +37,12 @@ export default {
   methods: {
     editContact(email) {
       this.$emit("editContact", email);
-      console.log(`Edit contact with ID: ${email}`);
     },
     deleteContact(email) {
       this.$emit("deleteContact", email);
-      console.log(`Delete contact with ID: ${email}`);
     },
     seeDetails(email) {
       this.$emit("seeDetails", email);
-      console.log(`Detail contact with ID: ${email}`);
     },
   },
 };

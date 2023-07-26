@@ -1,4 +1,3 @@
-<!-- eslint-disable no-unused-vars -->
 <template>
   <div class="contact-form">
     <div class="form-container">
@@ -18,6 +17,12 @@
             id="contactInput"
             v-model="form.contact"
             required
+            v-mask="[
+              '####-####',
+              '#####-####',
+              '(##) ####-####',
+              '(##) #####-####',
+            ]"
           />
         </div>
 
@@ -28,10 +33,11 @@
 
         <div class="form-group">
           <label for="photoInput">Upload de foto:</label>
-          <input type="file" id="photoInput" @change="onImageChange" required />
+          <input type="file" id="photoInput" @change="onImageChange" />
         </div>
 
-        <button type="submit">Enviar</button>
+        <button type="submit" v-if="!existingContact">Enviar</button>
+        <button type="submit" v-else>Editar</button>
         <button type="reset">Limpar</button>
       </form>
     </div>
@@ -40,8 +46,15 @@
 
 <script>
 export default {
+  props: {
+    existingContact: {
+      type: Object,
+      default: null,
+    },
+  },
   data() {
     return {
+      editedEmail: "",
       form: {
         name: "",
         contact: "",
@@ -51,44 +64,22 @@ export default {
     };
   },
   methods: {
-    // get(key) {
-    //   this.form.photo = localStorage.getItem(key);
-    // },
-    // set(key) {
-    //   try {
-    //     localStorage.setItem(key, this.form.photo);
-    //   } catch (e) {
-    //     console.log(`Storage failed: ${e}`);
-    //   }
-    // },
     onImageChange(e) {
       const reader = new FileReader();
+      const files = e.target.files || e.dataTransfer.files;
 
-      var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
       reader.onload = (e) => {
         this.form.photo = e.target.result;
       };
       reader.readAsDataURL(files[0]);
     },
-    // onFileChange(e) {
-    //   var files = e.target.files || e.dataTransfer.files;
-    //   if (!files.length) return;
-    //   this.createImage(files[0]);
-    // },
-    // createImage(file) {
-    //   //TERA QUE SER UTILIZADO EM OUTROS LUGARES
-    //   const reader = new FileReader();
-
-    //   reader.onload = (e) => {
-    //     this.form.photo = e.target.result;
-    //     this.set("img");
-    //   };
-    //   reader.readAsDataURL(file);
-    // },
-
     submitForm() {
-      this.$emit("sendForm", this.form);
+      if (this.existingContact) {
+        this.$emit("editForm", { editedEmail: this.editedEmail, ...this.form });
+      } else {
+        this.$emit("sendForm", this.form);
+      }
     },
     resetForm() {
       this.form = {
@@ -98,17 +89,33 @@ export default {
         photo: null,
       };
     },
-    // handleFileChange(event) {
-    //   var files = event.target.files || event.dataTransfer.files;
-    //   if (!files.length) {
-    //     return;
-    //   }
-    //   this.createImage(files[0]);
-    //   //   this.form.photo = event.target.files[0];
-    // },
+  },
+  watch: {
+    existingContact: {
+      immediate: true,
+      handler(value) {
+        if (value) {
+          this.form = { ...value };
+          this.editedEmail = this.form.email;
+        }
+      },
+    },
   },
 };
 </script>
+<style >
+html,
+body {
+  margin: 0px !important;
+  padding: 0px !important;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
 
 <style>
 .contact-form {
