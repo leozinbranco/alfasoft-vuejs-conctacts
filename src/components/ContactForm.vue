@@ -13,7 +13,7 @@
         <div class="form-group">
           <label for="contactInput">Contato:</label>
           <input
-            type="text"
+            type="tel"
             id="contactInput"
             v-model="form.contact"
             required
